@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		635E96462BF8D6580053B59B /* DownloadProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635E96452BF8D6580053B59B /* DownloadProgressView.swift */; };
 		63C3E9172BF7B33E00FE176A /* InterestingSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C3E9162BF7B33E00FE176A /* InterestingSwiftUIApp.swift */; };
 		63C3E9192BF7B33E00FE176A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C3E9182BF7B33E00FE176A /* ContentView.swift */; };
 		63C3E91B2BF7B34000FE176A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63C3E91A2BF7B34000FE176A /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		635E96452BF8D6580053B59B /* DownloadProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadProgressView.swift; sourceTree = "<group>"; };
 		63C3E9132BF7B33E00FE176A /* InterestingSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InterestingSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63C3E9162BF7B33E00FE176A /* InterestingSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestingSwiftUIApp.swift; sourceTree = "<group>"; };
 		63C3E9182BF7B33E00FE176A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -74,6 +76,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		635E96442BF8D6400053B59B /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				635E96452BF8D6580053B59B /* DownloadProgressView.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
 		63C3E90A2BF7B33E00FE176A = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +109,7 @@
 			children = (
 				63C3E9162BF7B33E00FE176A /* InterestingSwiftUIApp.swift */,
 				63C3E9182BF7B33E00FE176A /* ContentView.swift */,
+				635E96442BF8D6400053B59B /* Progress */,
 				63C3E9412BF7B35E00FE176A /* Grid */,
 				63C3E91A2BF7B34000FE176A /* Assets.xcassets */,
 				63C3E91C2BF7B34000FE176A /* InterestingSwiftUI.entitlements */,
@@ -271,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63C3E9432BF7B3BC00FE176A /* GridView_16.swift in Sources */,
+				635E96462BF8D6580053B59B /* DownloadProgressView.swift in Sources */,
 				63C3E9192BF7B33E00FE176A /* ContentView.swift in Sources */,
 				63C3E9172BF7B33E00FE176A /* InterestingSwiftUIApp.swift in Sources */,
 			);
@@ -446,7 +458,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.3;
@@ -484,7 +496,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.3;
