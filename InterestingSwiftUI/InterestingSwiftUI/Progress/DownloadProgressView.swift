@@ -13,7 +13,7 @@ struct DownloadProgressView: View {
     @State private var isAtBottom: Bool = false
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView{
+            ScrollView {
                 LazyVGrid(columns: columns, spacing: 40) {
                     FocuseView()
                     FocuseView1()
@@ -25,7 +25,6 @@ struct DownloadProgressView: View {
                     scrollViewProxy = proxy
                 }
                 .background(GeometryReader { geo -> Color in
-                    let offsetY = geo.frame(in: .global).maxY
                     DispatchQueue.main.async {
                         if !isAtBottom {
                             scrollViewProxy?.scrollTo("bottom", anchor: .bottom)
@@ -54,7 +53,9 @@ struct FocuseView: View {
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.maxProgress))
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                
                 Text("FocuseView")
+                
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.loadProgress))
                     .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
@@ -62,8 +63,10 @@ struct FocuseView: View {
                     .animation(Animation.linear(duration: 2).repeatForever(autoreverses: false), value: progress.isLoading)
             }
             .padding(.horizontal)
+            
             Text("Time: \(progress.loadProgress, specifier: "%.2f")/\(progress.maxProgress, specifier: "%.0f")")
                 .padding(.top)
+            
             Grid {
                 GridRow {
                     Button {
@@ -72,6 +75,7 @@ struct FocuseView: View {
                         Image(systemName: progress.isLoading ? "pause.fill" : "play.fill")
                     }
                     .buttonStyle(BorderedButtonStyle())
+                    
                     Button {
                         progress.loadProgress = 0
                     } label: {
@@ -97,14 +101,18 @@ struct FocuseView1: View {
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.maxProgress))
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                
                 Text("FocuseView1")
+                
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.loadProgress))
                     .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
             }
             .padding(.horizontal)
+            
             Text("Time: \(progress.loadProgress, specifier: "%.2f")/\(progress.maxProgress, specifier: "%.0f")")
                 .padding(.top)
+            
             Grid {
                 GridRow {
                     Button {
@@ -113,6 +121,7 @@ struct FocuseView1: View {
                         Image(systemName: progress.isLoading ? "pause.fill" : "play.fill")
                     }
                     .buttonStyle(BorderedButtonStyle())
+                    
                     Button {
                         progress.loadProgress = 0
                     } label: {
@@ -137,13 +146,13 @@ struct FocuseView2: View {
                 Circle()
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 
-                // Left half progress
                 Circle()
                     .trim(from: 0.5 - (CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress) / 2), to: 0.5)
                     .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 
-                // Right half progress
+                Text("FocuseView2")
+                
                 Circle()
                     .trim(from: 0.5, to: 0.5 + (CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress) / 2))
                     .stroke(.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
@@ -187,15 +196,19 @@ struct FocuseView3: View {
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.maxProgress))
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                
                 Text("FocuseView3")
+                
                 Circle()
                     .trim(from: 0, to: CGFloat(progress.loadProgress))
                     .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .rotationEffect(.degrees(-90))
             }
             .padding(.horizontal)
+            
             Text("Time: \(progress.loadProgress, specifier: "%.2f")/\(progress.maxProgress, specifier: "%.0f")")
                 .padding(.top)
+            
             Grid {
                 GridRow {
                     Button {
@@ -204,6 +217,7 @@ struct FocuseView3: View {
                         Image(systemName: progress.isLoading ? "pause.fill" : "play.fill")
                     }
                     .buttonStyle(BorderedButtonStyle())
+                    
                     Button {
                         progress.loadProgress = 0
                     } label: {
@@ -228,21 +242,17 @@ struct FocuseView4: View {
                 Circle()
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 
-                // Основной круг для заполнения
                 Circle()
-                    .trim(from: 0, to: CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress))
+                    .trim(from: 0.5 - (CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress) / 2), to: 0.5)
                     .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+                    .rotationEffect(.degrees(90))
                 
-                // Круг для создания иллюзии заполнения в обратном направлении
+                Text("FocuseView4")
+                
                 Circle()
-                    .stroke(Color.black.opacity(0), style: StrokeStyle(lineWidth: 4, lineCap: .round)) // Сделаем его невидимым
-                    .overlay(
-                        Circle()
-                            .trim(from: 0, to: CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress))
-                            .stroke(.black, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    )
-                    .rotationEffect(.degrees(-90 - (progress.loadProgress / progress.maxProgress) * 180)) // Поворачиваем в обратном направлении
+                    .trim(from: 0.5, to: 0.5 + (CGFloat(progress.loadProgress) / CGFloat(progress.maxProgress) / 2))
+                    .stroke(.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(90))
             }
             .padding(.horizontal)
             
