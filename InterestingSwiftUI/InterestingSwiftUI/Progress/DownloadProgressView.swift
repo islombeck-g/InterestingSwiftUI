@@ -111,7 +111,7 @@ struct FocuseView1: View {
                     .trim(from: 0, to: 1)
                     .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 
-                Text("FocusView0")
+                Text("FocusView1")
                 
                 Circle()
                     .trim(from: 0, to: 0.5)
