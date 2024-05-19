@@ -11,7 +11,7 @@ import SwiftUI
 struct InterestingSwiftUIApp: App {
     var body: some Scene {
         WindowGroup {
-            DownloadProgressView()
+            ContentView()
         }
     }
 }
