@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
-
-#Preview {
-//    FinalProgressView()
-    CombinedFocuseView()
-}
+import Combine
+//#Preview {
+//    //    FinalProgressView()
+////    CombinedFocuseView()
+//}
 
 struct C: View {
     @State private var moveDown = false
     @State private var opacity: Double = 1.0
-
+    
     var body: some View {
         VStack {
             Spacer()
@@ -31,7 +31,7 @@ struct C: View {
                         self.moveDown.toggle()
                     }
                 }
-
+            
             Spacer()
         }
     }
@@ -39,7 +39,7 @@ struct C: View {
 struct FinalProgressView: View {
     @State private var arrowOffset: CGFloat = -8
     @State private var arrowOpacity: Double = 0.0
-
+    
     var body: some View {
         HStack {
             Image("folderTemplate")
@@ -49,13 +49,13 @@ struct FinalProgressView: View {
                 Spacer()
             }
             Spacer()
-            CombinedFocuseView()
-                .frame(width: 30)
+//            CombinedFocuseView()
+//                .frame(width: 30)
         }
         .frame(height: 50)
         .padding(.horizontal)
     }
-
+    
     private func startArrowAnimation() {
         withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
             arrowOffset = 8
@@ -73,133 +73,9 @@ struct FinalProgressView: View {
 
 //-----------------------_
 
-struct CombinedFocuseView: View {
-    @State private var loadingState: LoadingState = .preparing
-    @StateObject private var progress = ProgressViewModel()
-    @State private var rotationAngle: Angle = .zero
-    @State var rotationAngle2: Double = 0
-    var body: some View {
-        VStack {
-            ZStack {
-                Circle()
-                    .trim(from: progress.backProgress, to: CGFloat(progress.loadProgress))
-                    .stroke(.yellow, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-            }
-            
-            .rotationEffect(.degrees(rotationAngle2))
-            .animation(.linear(duration: 2.0).repeatForever(autoreverses: false), value: rotationAngle2)
-            .task {
-                rotationAngle2 = 360
-            }
-        }
-        .frame(height: 130)
-        Grid {
-            GridRow {
-                Button {
-                    progress.increase()
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .buttonStyle(BorderedButtonStyle())
-                Text("\(progress.downloadProgres.formatted())")
-                Button {
-                    progress.decrease()
-                } label: {
-                    Image(systemName: "minus")
-                }
-                .buttonStyle(BorderedButtonStyle())
-            }
-            .frame(width: 40)
-        }
-        .padding(.top, 40)
-        
-        .onAppear {
-            progress.toggleLoading(interval: 0.01)
-        }
-        .onTapGesture {
-            toggleLoadingState()
-        }
-    }
 
-    private func toggleLoadingState() {
-        if loadingState == .preparing {
-            loadingState = .loading
-            progress.stopLoading()
-            progress.toggleLoading(interval: 0.1)
-            startRotating()
-        } else {
-            loadingState = .preparing
-            progress.stopLoading()
-            progress.toggleLoading(interval: 0.02)
-        }
-    }
 
-    private func startRotating() {
-        withAnimation(Animation.linear(duration: 2).repeatForever(autoreverses: false)) {
-            rotationAngle = .degrees(360)
-        }
-    }
-}
 
-class ProgressViewModel: ObservableObject {
-    @Published var loadProgress = 0.0
-    @Published var backProgress = 0.0
-    @Published var isLoading = false
-    @Published var downloadProgres = 0.0
-    
-    let maxProgress = 1.1
-    var timer: Timer?
-    
-    func startLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
-        isLoading = true
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-                if self.loadProgress < self.maxProgress {
-                    withAnimation {
-                        self.loadProgress += 0.01
-                    }
-                } else if self.backProgress < self.loadProgress {
-                    withAnimation {
-                        self.backProgress += 0.01
-                    }
-                } else {
-                    self.loadProgress = 0.0
-                    self.backProgress = 0.0
-                }
-        }
-    }
-    
-    func stopLoading() {
-        isLoading = false
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    func toggleLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
-        if isLoading {
-            stopLoading()
-        } else {
-            startLoading(interval: interval, backProgressEnabled: backProgressEnabled)
-        }
-    }
-    
-    func increase() {
-        if downloadProgres < 0.85 {
-            downloadProgres += 0.15
-        } else {
-            downloadProgres = 1.0
-        }
-    }
-    func decrease() {
-        if downloadProgres >= 0.15 {
-            downloadProgres -= 0.15
-        } else {
-            downloadProgres = 0.0
-        }
-        
-    }
-}
 
 enum LoadingState {
     case preparing
@@ -209,10 +85,70 @@ enum LoadingState {
 //------------------------
 
 
-
-
-
-
+//test1
+//class ProgressViewModel: ObservableObject {
+//    @Published var loadProgress = 0.0
+//    @Published var backProgress = 1.0
+//    @Published var isLoading = false
+//    @Published var downloadProgres = 0.0
+//
+//    let maxProgress = 1.1
+//    var timer: Timer?
+//
+//    func startLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
+//        isLoading = true
+//        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            if self.loadProgress < self.maxProgress {
+//                withAnimation {
+//                    self.loadProgress += 0.01
+//                }
+//            } else if self.backProgress < self.loadProgress + self.downloadProgres {
+//                withAnimation {
+//                    self.backProgress += 0.01
+//                }
+//            } else {
+//                self.loadProgress = self.downloadProgres
+//                self.backProgress = self.downloadProgres
+//            }
+//        }
+//    }
+//
+//    func stopLoading() {
+//        isLoading = false
+//        timer?.invalidate()
+//        timer = nil
+//    }
+//
+//    func toggleLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
+//        if isLoading {
+//            stopLoading()
+//        } else {
+//            startLoading(interval: interval, backProgressEnabled: backProgressEnabled)
+//        }
+//    }
+//
+//    func increase() {
+//        if downloadProgres < 0.85 {
+//            downloadProgres += 0.15
+//        } else {
+//            downloadProgres = 1.0
+//        }
+//        loadProgress = downloadProgres
+//        backProgress = downloadProgres
+//    }
+//
+//    func decrease() {
+//        if downloadProgres >= 0.15 {
+//            downloadProgres -= 0.15
+//        } else {
+//            downloadProgres = 0.0
+//        }
+//        loadProgress = downloadProgres
+//        backProgress = downloadProgres
+//    }
+//}
 
 
 
@@ -322,3 +258,71 @@ enum LoadingState {
 //        }
 //    }
 //}
+
+//class ProgressViewModel1: ObservableObject {
+//    @Published var loadProgress = 0.0
+//    @Published var backProgress = 1.0
+//    @Published var isLoading = false
+//    @Published var downloadProgres = 0.0
+//
+//    let maxProgress = 1.1
+//    var timer: Timer?
+//
+//    func startLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
+//        isLoading = true
+//        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            if self.loadProgress < self.maxProgress {
+//                withAnimation {
+//                    self.loadProgress += 0.01
+//                }
+//            } else if self.backProgress < self.loadProgress {
+//                withAnimation {
+//                    self.backProgress += 0.01
+//                }
+//            } else {
+//                self.loadProgress = 0.0
+//                self.backProgress = 0.0
+//            }
+//        }
+//    }
+//
+//    func stopLoading() {
+//        isLoading = false
+//        timer?.invalidate()
+//        timer = nil
+//    }
+//
+//    func toggleLoading(interval: TimeInterval = 0.1, backProgressEnabled: Bool = false) {
+//        if isLoading {
+//            stopLoading()
+//        } else {
+//            startLoading(interval: interval, backProgressEnabled: backProgressEnabled)
+//        }
+//    }
+//
+//    func increase() {
+//        if downloadProgres < 0.85 {
+//            downloadProgres += 0.15
+//        } else {
+//            downloadProgres = 1.0
+//        }
+//    }
+//    func decrease() {
+//        if downloadProgres >= 0.15 {
+//            downloadProgres -= 0.15
+//        } else {
+//            downloadProgres = 0.0
+//        }
+//    }
+//}
+
+
+
+//            .rotationEffect(.degrees(rotationAngle2))
+//            .animation(.linear(duration: 2.0).repeatForever(autoreverses: false), value: rotationAngle2)
+//            .task {
+//                rotationAngle2 = 360
+//            }
+

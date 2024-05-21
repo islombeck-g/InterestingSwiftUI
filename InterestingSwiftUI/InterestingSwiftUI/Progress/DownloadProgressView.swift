@@ -22,6 +22,9 @@ struct DownloadProgressView: View {
                     FocuseView4()
                     FocuseView5()
                     FocuseView6()
+                    FocuseView6()
+                    ReadyTime1View()
+                    ReadyTime2View()
                 }
                 .onAppear {
                     scrollViewProxy = proxy
