@@ -21,8 +21,17 @@ struct ContentView: View {
                 } label: {
                     Text("GridView")
                 }
+                NavigationLink {
+                    TestView()
+                } label: {
+                    Text("TestView")
+                }
+                NavigationLink {
+                    ScrollDismissesKeyboardView()
+                } label: {
+                    Text("ScrollDismissesKeyboardView")
+                }
             }
-            
         }
     }
 }

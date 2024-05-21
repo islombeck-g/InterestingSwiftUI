@@ -21,6 +21,7 @@ struct DownloadProgressView: View {
                     FocuseView3()
                     FocuseView4()
                     FocuseView5()
+                    FocuseView6()
                 }
                 .onAppear {
                     scrollViewProxy = proxy
@@ -382,3 +383,166 @@ class ProgressForProgressView: ObservableObject {
 //                    .rotationEffect(.degrees(progress.isLoading ? 360 : 0))
 //                    .animation(Animation.linear(duration: 2).repeatForever(autoreverses: false), value: progress.isLoading)
 ////                    .animation(Animation.linear(duration: 2).repeatForever(autoreverses: false), value: progress.isLoading)
+
+
+import SwiftUI
+
+struct FocuseView6: View {
+    @StateObject var progress = ProgressForProgressView1()
+    
+    var body: some View {
+        VStack {
+            ZStack {
+                Circle()
+                    .trim(from: 0, to: CGFloat(progress.maxProgress))
+                    .stroke(.gray, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                
+                Text("FocuseView4")
+                
+                Circle()
+                    .trim(from: 0, to: CGFloat(progress.loadProgress))
+                    .stroke(.yellow, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                
+                Circle()
+                    .trim(from: 0, to: CGFloat(progress.backProgress))
+                    .stroke(.gray, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+            }
+            .padding(.horizontal)
+            
+            Text("Time: \(progress.loadProgress, specifier: "%.2f")/\(progress.maxProgress, specifier: "%.0f")")
+                .padding(.top)
+            
+            Grid {
+                GridRow {
+                    Button {
+                        progress.toggleLoading()
+                    } label: {
+                        Image(systemName: progress.isLoading ? "pause.fill" : "play.fill")
+                    }
+                    .buttonStyle(BorderedButtonStyle())
+                    
+                    Button {
+                        progress.resetProgress()
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                    .buttonStyle(BorderedButtonStyle())
+                }
+            }
+        }
+        .onAppear {
+            progress.toggleLoading()
+        }
+    }
+}
+
+class ProgressForProgressView1: ObservableObject {
+    @Published var loadProgress = 0.0
+    @Published var backProgress = 0.0
+    @Published var isLoading = false
+    
+    let maxProgress = 1.1
+    var timer: Timer?
+    
+    func startLoading() {
+        isLoading = true
+        timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            if self.loadProgress > self.maxProgress {
+                self.loadProgress = 0.0
+                self.backProgress = 0.0
+            } else {
+                withAnimation {
+                    self.loadProgress += 0.01
+                    if self.loadProgress >= self.maxProgress / 2 {
+                        self.backProgress += 0.02
+                    }
+                    if self.backProgress > self.loadProgress {
+                        self.backProgress = self.loadProgress
+                    }
+                }
+            }
+        }
+    }
+    
+    func stopLoading() {
+        isLoading = false
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    func toggleLoading() {
+        if isLoading {
+            stopLoading()
+        } else {
+            startLoading()
+        }
+    }
+    
+    func resetProgress() {
+        loadProgress = 0
+        backProgress = 0
+    }
+}
+
+
+//struct FocuseView6: View {
+////    @StateObject var progress = ProgressForProgressView()
+//    @State private var rotationAngle: Angle = .degrees(0)
+//
+//    var body: some View {
+//        VStack {
+//            ZStack {
+//                Circle()
+//                    .trim(from: 0, to: CGFloat(1))
+//                    .stroke(Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+//                
+//                Text("FocusView0")
+//                
+//                Circle()
+//                    .trim(from: 0, to: CGFloat(0.4))
+//                    .stroke(.yellow, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+//                    .rotationEffect(rotationAngle)
+//            }
+//            .padding(.horizontal)
+//            
+////            Text("Time: \(progress.loadProgress, specifier: "%.2f")/\(progress.maxProgress, specifier: "%.0f")")
+////                .padding(.top)
+//            
+//            Grid {
+//                GridRow {
+//                    Button {
+////                        progress.toggleLoading()
+//                        startRotating() // Запускаем вращение при нажатии на кнопку
+//                    } label: {
+//                        Image(systemName: "play.fill")
+//                    }
+//                    .buttonStyle(BorderedButtonStyle())
+//                    
+//                    Button {
+////                        progress.loadProgress = 0
+//                    } label: {
+//                        Image(systemName: "arrow.counterclockwise")
+//                    }
+//                    .buttonStyle(BorderedButtonStyle())
+//                }
+//            }
+//            
+//        }
+//        .onChange(of: rotationAngle, perform: { value in
+//            print("value: \(value)")
+//        })
+//        .onAppear {
+////            progress.toggleLoading()
+//            startRotating()
+//        }
+//    }
+//    
+//    func startRotating() {
+//        withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
+//            rotationAngle = .degrees(360)
+//        }
+//    }
+//}
