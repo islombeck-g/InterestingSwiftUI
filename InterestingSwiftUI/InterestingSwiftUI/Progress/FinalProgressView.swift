@@ -7,14 +7,10 @@
 
 import SwiftUI
 
-
-
-
 #Preview {
 //    FinalProgressView()
     CombinedFocuseView()
 }
-
 
 struct C: View {
     @State private var moveDown = false
@@ -40,9 +36,6 @@ struct C: View {
         }
     }
 }
-
-
-
 struct FinalProgressView: View {
     @State private var arrowOffset: CGFloat = -8
     @State private var arrowOpacity: Double = 0.0
@@ -84,33 +77,48 @@ struct CombinedFocuseView: View {
     @State private var loadingState: LoadingState = .preparing
     @StateObject private var progress = ProgressViewModel()
     @State private var rotationAngle: Angle = .zero
-
+    @State var rotationAngle2: Double = 0
     var body: some View {
         VStack {
             ZStack {
                 Circle()
-                    .trim(from: 0, to: CGFloat(progress.maxProgress))
-                    .stroke(loadingState == .preparing ? .gray : Color.black.opacity(0.09), style: StrokeStyle(lineWidth: 2, lineCap: .round))
-
-                Circle()
-                    .trim(from: 0, to: CGFloat(progress.loadProgress))
+                    .trim(from: progress.backProgress, to: CGFloat(progress.loadProgress))
                     .stroke(.yellow, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                    .rotationEffect(loadingState == .preparing ? .degrees(-90) : rotationAngle)
-
-                if loadingState == .preparing {
-                    Circle()
-                        .trim(from: 0, to: CGFloat(progress.backProgress))
-                        .stroke(.gray, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                }
+                    .rotationEffect(.degrees(-90))
             }
-            .onTapGesture {
-                toggleLoadingState()
+            
+            .rotationEffect(.degrees(rotationAngle2))
+            .animation(.linear(duration: 2.0).repeatForever(autoreverses: false), value: rotationAngle2)
+            .task {
+                rotationAngle2 = 360
             }
         }
         .frame(height: 130)
+        Grid {
+            GridRow {
+                Button {
+                    progress.increase()
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .buttonStyle(BorderedButtonStyle())
+                Text("\(progress.downloadProgres.formatted())")
+                Button {
+                    progress.decrease()
+                } label: {
+                    Image(systemName: "minus")
+                }
+                .buttonStyle(BorderedButtonStyle())
+            }
+            .frame(width: 40)
+        }
+        .padding(.top, 40)
+        
         .onAppear {
-            progress.toggleLoading(interval: 0.02, backProgressEnabled: true)
+            progress.toggleLoading(interval: 0.01)
+        }
+        .onTapGesture {
+            toggleLoadingState()
         }
     }
 
@@ -118,12 +126,12 @@ struct CombinedFocuseView: View {
         if loadingState == .preparing {
             loadingState = .loading
             progress.stopLoading()
-            progress.toggleLoading(interval: 0.1, backProgressEnabled: false)
+            progress.toggleLoading(interval: 0.1)
             startRotating()
         } else {
             loadingState = .preparing
             progress.stopLoading()
-            progress.toggleLoading(interval: 0.02, backProgressEnabled: true)
+            progress.toggleLoading(interval: 0.02)
         }
     }
 
@@ -138,6 +146,7 @@ class ProgressViewModel: ObservableObject {
     @Published var loadProgress = 0.0
     @Published var backProgress = 0.0
     @Published var isLoading = false
+    @Published var downloadProgres = 0.0
     
     let maxProgress = 1.1
     var timer: Timer?
@@ -146,20 +155,18 @@ class ProgressViewModel: ObservableObject {
         isLoading = true
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else { return }
-            if self.loadProgress > self.maxProgress {
-                self.loadProgress = 0.0
-                self.backProgress = 0.0
-            } else {
-                withAnimation {
-                    self.loadProgress += 0.01
-                    if backProgressEnabled && self.loadProgress >= self.maxProgress / 2 {
-                        self.backProgress += 0.02
+                if self.loadProgress < self.maxProgress {
+                    withAnimation {
+                        self.loadProgress += 0.01
                     }
-                    if self.backProgress > self.loadProgress {
-                        self.backProgress = self.loadProgress
+                } else if self.backProgress < self.loadProgress {
+                    withAnimation {
+                        self.backProgress += 0.01
                     }
+                } else {
+                    self.loadProgress = 0.0
+                    self.backProgress = 0.0
                 }
-            }
         }
     }
     
@@ -177,9 +184,20 @@ class ProgressViewModel: ObservableObject {
         }
     }
     
-    func resetProgress() {
-        loadProgress = 0
-        backProgress = 0
+    func increase() {
+        if downloadProgres < 0.85 {
+            downloadProgres += 0.15
+        } else {
+            downloadProgres = 1.0
+        }
+    }
+    func decrease() {
+        if downloadProgres >= 0.15 {
+            downloadProgres -= 0.15
+        } else {
+            downloadProgres = 0.0
+        }
+        
     }
 }
 
